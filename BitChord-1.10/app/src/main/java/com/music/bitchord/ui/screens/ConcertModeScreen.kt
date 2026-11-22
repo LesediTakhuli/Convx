@@ -115,7 +115,7 @@ fun ConcertModeScreen(
                         status = "Searching for tracks…"
                         scope.launch {
                             val built = ConcertSetBuilder.build(context, concept, currentSong, count.toInt()) { message ->
-                                withContext(Dispatchers.Main) { status = message }
+                                scope.launch(Dispatchers.Main) { status = message }
                             }
                             result = built
                             status = if (built == null) "No concert set could be built. Try another artist or theme." else "${built.tracks.size} tracks arranged for your concert."
@@ -187,7 +187,7 @@ fun ConcertModeScreen(
                                         includeHost = includeHost,
                                         sourceRoles = set.tracks.map { it.role },
                                     ) { progress ->
-                                        withContext(Dispatchers.Main) {
+                                        scope.launch(Dispatchers.Main) {
                                             status = when (progress.stage) {
                                                 ConcertQueuePreparer.Progress.Stage.PLANNING -> "Preparing song clips ${progress.done}/${progress.total}…"
                                                 ConcertQueuePreparer.Progress.Stage.NARRATING -> "Recording host announcements ${progress.done}/${progress.total}…"
